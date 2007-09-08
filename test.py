@@ -13,6 +13,6 @@ if __name__ == '__main__':
     for x in dta_file.dataset():
         c += 1
         print x
-        if len(filter(lambda x: type(x) is MissingValue, x)):
+        if len(filter(lambda x: x is None, x)):
             m += 1
     print '%d of %d observations (%d missing) from %s.' % (c, len(dta_file), m, sys.argv[1])

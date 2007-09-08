@@ -9,11 +9,16 @@ class Reader(object):
     _data_location = 0
     _col_sizes = ()
     _has_string_data = False
+    _missing_values = False
     TYPE_MAP = range(251)+list('bhlfd')
     MISSING_VALUES = { 'b': (-127,100), 'h': (-32767, 32740), 'l': (-2147483647, 2147483620), 'f': (-1.701e+38, +1.701e+38), 'd': (-1.798e+308, +8.988e+307) }
 
-    def __init__(self, file_object):
-        """Creates a new parser from a file object."""
+    def __init__(self, file_object, missing_values=False):
+        """Creates a new parser from a file object.
+        
+        If missing_values, parse missing values and return as a MissingValue
+        object (instead of None)."""
+        self._missing_values = missing_values
         self._parse_header(file_object)
 
     def file_headers(self):
@@ -146,7 +151,10 @@ class Reader(object):
         if fmt[-1] in self.MISSING_VALUES:
             nmin, nmax = self.MISSING_VALUES[fmt[-1]]
             if d < nmin or d > nmax:
-                return MissingValue(nmax, d)
+                if self._missing_values:
+                    return MissingValue(nmax, d)
+                else:
+                    return None
         return d
 
     def _next(self):
