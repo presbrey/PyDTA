@@ -42,7 +42,7 @@ class Reader(object):
 
     def variables(self):
         """Returns a list of the dataset's PyDTA.Variables."""
-        return map(Variable, zip(range(len(self)),
+        return map(Variable, zip(range(self._header['nvar']),
             self._header['typlist'], self._header['varlist'], self._header['srtlist'],
             self._header['fmtlist'], self._header['lbllist'], self._header['vlblist']))
 
